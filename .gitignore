@@ -1,0 +1,60 @@
+# Python
+*.py[cod]
+__pycache__/
+*.pyo
+*.pyd
+*.pytest_cache/
+*.mypy_cache/
+
+# Django
+*.log
+*.pot
+*.swp
+*.swo
+media/
+staticfiles/
+db.sqlite3
+*.sqlite3
+*.db
+
+# Environment variables
+.env
+*.env
+
+# Virtual environment
+venv/
+env/
+env.bak/
+.venv/
+
+# Django settings
+settings_local.py
+config/settings/local.py
+config/settings/.env
+
+# IDE/Editor specific
+.vscode/
+.idea/
+
+# Node.js (if applicable)
+node_modules/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Coverage reports
+.coverage
+*.coveragerc
+*.tox/
+*.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.hypothesis/
+
+# Certificates and Keys
+*.pem
+wendt-training/
