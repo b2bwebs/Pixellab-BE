@@ -19,6 +19,8 @@ from clients.permissions import (
 )
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 class ClientListApiView(ListAPIView):
@@ -27,6 +29,19 @@ class ClientListApiView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
     pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    # Fields you want to allow filtering on
+    # filterset_fields = ['status', 'category', 'country']  # Example model fields
+
+    # Search fields - these are fields for "search" param in frontend
+    search_fields = ["name", "email"]
+
+    # Ordering fields
+    ordering_fields = ["created_at", "name"]
+
+    # Default ordering
+    ordering = ["-created_at"]
 
 
 class ClientCreateAPIView(CreateAPIView):

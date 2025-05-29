@@ -1,0 +1,31 @@
+Sub DeleteRowsMatchingMultipleStrings()
+    Dim tbl As Table
+    Dim i As Integer
+    Dim cellText As String
+    Dim matchStrings As Variant
+    Dim str As Variant
+    Dim foundMatch As Boolean
+
+    ' List your match strings here
+    matchStrings = Array("karthick", "aravind", "prakash","sekar","velmani","chandru","vicky")
+
+    For Each tbl In ActiveDocument.Tables
+        For i = tbl.Rows.Count To 1 Step -1
+            cellText = tbl.Rows(i).Range.Text
+            cellText = Replace(cellText, Chr(13), "") ' remove paragraph marks
+            cellText = Replace(cellText, Chr(7), "")  ' remove end of cell marks
+
+            foundMatch = False
+            For Each str In matchStrings
+                If InStr(1, cellText, str, vbTextCompare) > 0 Then
+                    foundMatch = True
+                    Exit For
+                End If
+            Next str
+
+            If foundMatch Then
+                tbl.Rows(i).Delete
+            End If
+        Next i
+    Next tbl
+End Sub

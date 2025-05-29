@@ -8,11 +8,11 @@ from clients.views import (
 )
 
 urlpatterns = [
+    path("", client_list_view, name="clients-list"),
     path("create", client_create_view, name="client-create"),
     path("edit/<int:pk>/", client_retrieve_view, name="client-retrieve"),
     path(
         "self-details/", client_self_retrieve_view, name="client-retrieve-self-details"
     ),
     path("update/<int:pk>/", client_update_view, name="client_update"),
-    path("list", client_list_view, name="clients-list"),
 ]
