@@ -28,7 +28,6 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
             "sec_mobile",
             "address",
             "allowed_origins",
-            "rate_limit",
         ]
 
     def validate_email(self, value):
