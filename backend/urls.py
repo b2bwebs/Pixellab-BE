@@ -25,7 +25,8 @@ urlpatterns = [
     # API Endpoints
     path("api/v1/clients/", include("clients.urls")),
     path("api/v1/auth/", include("custom_users.urls.auth_urls")),
+    path("api/v1/pixeltre-ai/", include("ocrapp.urls")),
     path("api/v1/users/", include("custom_users.urls.user_urls")),
-    path("oauth/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    path("api/v1/oauth/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

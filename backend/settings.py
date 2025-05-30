@@ -70,7 +70,7 @@ THIRD_PARTY_APPS = [
     "import_export",
     "django_filters",
 ]
-PROJECT_APPS = ["custom_users", "clients"]
+PROJECT_APPS = ["custom_users", "clients", "ocrapp"]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 OAUTH2_PROVIDER = {
     "SCOPES": {
@@ -300,5 +300,4 @@ EMAIL_HOST_PASSWORD = "pcunqkmvresfoezl"  # Your email password
 
 # Default from email address
 DEFAULT_FROM_EMAIL = "ptkiddoscastle@gmail.com"
-# FEDEX_CLIENT_ID = config("FEDEX_CLIENT_ID1")
-# FEDEX_CLIENT_SECRET = config("FEDEX_CLIENT_SECRET")
+MISTRAL_API_KEY = config("MISTRAL_API_KEY")

@@ -3,10 +3,21 @@ from clients.models import Client
 from custom_users.models import User
 from oauth2_provider.models import Application
 from oauth2_provider.generators import generate_client_secret, generate_client_id
-from clients.models import AllowedOrigin
+from clients.models import AllowedOrigin, ClientAIParsingConfig
 from constants import (
     CLIENT,
 )
+
+
+class ClientAIConfigSerializer(serializers.Serializer):
+    file_pages = serializers.IntegerField()
+    max_final_pages = serializers.IntegerField()
+
+
+class ClientBaseAIConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClientAIParsingConfig
+        fields = ["file_pages", "max_final_pages"]  # Add any other fields if needed
 
 
 class ClientCreateUpdateSerializer(serializers.ModelSerializer):
@@ -16,6 +27,7 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
     allowed_origins = serializers.ListField(
         child=serializers.CharField(), write_only=True, required=False
     )
+    ai_config = ClientAIConfigSerializer(many=True, write_only=True, required=False)
 
     class Meta:
         model = Client
@@ -28,6 +40,8 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
             "sec_mobile",
             "address",
             "allowed_origins",
+            "default_max_pages",
+            "ai_config",
         ]
 
     def validate_email(self, value):
@@ -51,6 +65,7 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Extract email and password from validated data
+        ai_configs = validated_data.pop("ai_config", [])
         email = validated_data.pop("email")
         password = validated_data.pop("password")
         allowed_domains = validated_data.pop("allowed_origins", [])
@@ -81,7 +96,9 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
         validated_data["is_allow_all_origin"] = "*" in allowed_domains
         # Create a new client
         client = Client.objects.create(**validated_data)
-
+        # Save ai_config if any
+        for config in ai_configs:
+            ClientAIParsingConfig.objects.create(client=client, **config)
         # later use
         # Save allowed origins
         if not validated_data["is_allow_all_origin"]:
@@ -91,6 +108,8 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         email = validated_data.pop("email")
+        ai_configs = validated_data.pop("ai_config", None)
+
         # Get the current user from the request
         auth_user = self.context["request"].user
         if email:
@@ -107,6 +126,15 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
         instance.contact_no = validated_data.get("contact_no", instance.contact_no)
         instance.gst_no = validated_data.get("gst_no", instance.gst_no)
         instance.sec_mobile = validated_data.get("sec_mobile", instance.sec_mobile)
+        instance.default_max_pages = validated_data.get(
+            "default_max_pages", instance.default_max_pages
+        )
+        if ai_configs is not None:
+
+            # OR update related objects if stored separately
+            instance.ai_config.all().delete()
+            for config in ai_configs:
+                ClientAIParsingConfig.objects.create(client=instance, **config)
         instance.updated_by = auth_user
         instance.save()
 
@@ -128,6 +156,7 @@ class AllowedOriginSerializer(serializers.ModelSerializer):
 class ClientRetrieveSerializer(serializers.ModelSerializer):
     user = RelatedUserSerializer()
     allowed_origins = serializers.SerializerMethodField()
+    ai_config = ClientBaseAIConfigSerializer(many=True, read_only=True)
 
     class Meta:
         model = Client
@@ -142,6 +171,7 @@ class ClientRetrieveSerializer(serializers.ModelSerializer):
             "contact_no",
             "gst_no",
             "sec_mobile",
+            "ai_config",
         ]
 
     def get_allowed_origins(self, instance):
@@ -153,6 +183,7 @@ class ClientRetrieveSerializer(serializers.ModelSerializer):
 class ClientListSerializer(serializers.ModelSerializer):
     user = RelatedUserSerializer()  # Nested representation of the User object
     allowed_origins = serializers.SerializerMethodField()
+    ai_config = ClientBaseAIConfigSerializer(many=True, read_only=True)
 
     class Meta:
         model = Client
@@ -173,6 +204,8 @@ class ClientListSerializer(serializers.ModelSerializer):
             "contact_no",
             "gst_no",
             "sec_mobile",
+            "ai_config",
+            "default_max_pages",
         ]
 
     def get_allowed_origins(self, instance):
