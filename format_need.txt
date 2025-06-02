@@ -1,0 +1,119 @@
+You represent the seller company whose name always starts with "Wendt". Use this fact to identify the seller_company_info.
+
+Extract the following structured JSON fields accurately from the purchase order or related document. Do not hallucinate or generate missing information. If a field is missing, leave it as an empty string or empty array as applicable.
+
+Key rules for fields:
+
+- buyer_company_info: Information about the company issuing the purchase order (PO owner).
+- seller_company_info: Our company info (receiver of PO), recognized by name starting with "Wendt".
+- billing_address_info and shipping_address_info: Always belong to the buyer. If missing, copy the respective fields from buyer_company_info. These must never contain seller details.
+- GST numbers must match regex: ^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$; if invalid, leave empty.
+- Emails and phone numbers are arrays of strings; use [] if missing.
+- Price, amount, and numeric currency fields are strings representing floats, e.g., "1234.56".
+- Percentage fields are strings including the '%' sign, e.g., "18%".
+- Dates in ISO format: "YYYY-MM-DD", else empty string.
+- Quantities are strings representing numbers, e.g., "10", "5.5".
+
+{
+  "buyer_company_info": {
+    "name": "",                       // string
+    "full_address": "",               // string
+    "factory_address": "",            // string
+    "corporate_office_address": "",  // string
+    "registered_office_address": "", // string
+    "cin_number": "",                 // string
+    "gst_number": "",                 // string (GST format regex)
+    "email_ids": [],                  // array of strings (email addresses)
+    "phone_numbers": [],              // array of strings (phone numbers)
+    "website_url": "",                // string
+    "vendor_code": ""                 // string
+  },
+  "seller_company_info": {
+    "name": "",                      // string (starts with "Wendt")
+    "full_address": "",              // string
+    "gst_number": ""                 // string (GST format regex)
+  },
+  "purchase_order_info": {
+    "order_number": "",              // string
+    "order_date": "",                // string (ISO date)
+    "purchase_request_number": "",  // string
+    "buyer_contact_name": ""         // string
+  },
+  "po_terms_and_conditions": {
+    "freight_charges": "",           // float string
+    "packing_charges": "",           // float string
+    "delivery_terms": "",            // string
+    "payment_terms": "",             // string
+    "incoterms": "",                 // string
+    "transport_mode": "",            // string
+    "fob_location": "",              // string
+    "transport_carrier": "",         // string
+    "document_type": "",             // string
+    "currency_code": ""              // string, e.g., "INR", "USD"
+  },
+  "billing_address_info": {
+    "company_name": "",              // string
+    "address": "",                   // string
+    "gst_number": "",                // string (GST format regex)
+    "email_ids": [],                 // array of strings
+    "phone_numbers": []              // array of strings
+  },
+  "shipping_address_info": {
+    "company_name": "",              // string
+    "address": "",                   // string
+    "gst_number": "",                // string (GST format regex)
+    "email_ids": [],                 // array of strings
+    "phone_numbers": []              // array of strings
+  },
+  "order_items": [
+    {
+      "serial_number": "",               // string or int-like string, e.g. "1"
+      "item_code": "",                   // string
+      "product_code": "",                // string
+      "part_number": "",                 // string
+      "machine_number": "",              // string
+      "hsn_or_sac_code": "",             // string
+      "material_code": "",               // string
+      "description": "",                 // string
+      "expected_delivery_date": "",      // string (ISO date)
+      "quantity": "",                    // string numeric
+      "unit": "",                       // string
+      "per_unit_price": "",              // float string
+      "discount_percentage": "",         // string with % sign
+      "discount_amount": "",             // float string
+      "final_unit_price": "",            // float string
+      "cgst_percentage": "",             // string with % sign
+      "sgst_or_utgst_percentage": "",    // string with % sign
+      "igst_percentage": "",             // string with % sign
+      "cgst_amount": "",                 // float string
+      "sgst_or_utgst_amount": "",        // float string
+      "igst_amount": "",                 // float string
+      "total_tax_amount": "",            // float string
+      "subtotal_amount": "",             // float string (before tax)
+      "total_with_tax": "",              // float string
+      "total_without_tax": "",           // float string
+      "cess_amount": ""                  // float string
+    }
+  ],
+  "po_grand_total": {
+    "subtotal": "",                // float string
+    "cgst_percentage": "",         // string with % sign
+    "sgst_percentage": "",         // string with % sign
+    "igst_percentage": "",         // string with % sign
+    "cgst_total": "",              // float string
+    "sgst_total": "",              // float string
+    "igst_total": "",              // float string
+    "total_discount": "",          // float string
+    "total_tax": "",               // float string
+    "final_total_with_tax": "",    // float string
+    "final_total_without_tax": ""  // float string
+  },
+  "special_notes": "",             // string
+  "attention_to": "",              // string
+  "attention_contact_details": {
+    "contact_names": "",           // string (comma-separated if multiple)
+    "email_ids": "",               // string (comma-separated if multiple)
+    "phone_numbers": ""            // string (comma-separated if multiple)
+  },
+  "additional_info": []            // array (any additional info as per document)
+}
