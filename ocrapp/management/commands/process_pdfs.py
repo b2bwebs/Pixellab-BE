@@ -17,12 +17,12 @@ class Command(BaseCommand):
             prompt_text = file.read()
 
         for file_record in files:
-            file_path = file_record.original_file_path
+            file_path = file_record.original_file_path.path
             if file_record.total_pages != file_record.finalized_pages:
-                file_path = file_record.modified_file_path
-            if not os.path.exists(file_path):
-                self.stderr.write(self.style.ERROR(f"File not found: {file_path}"))
-                continue
+                file_path = file_record.modified_file_path.path
+            # if not os.path.exists(file_path):
+            #     self.stderr.write(self.style.ERROR(f"File not found: {file_path}"))
+            #     continue
 
             self.stdout.write(f"Processing file: {file_path}")
             try:
