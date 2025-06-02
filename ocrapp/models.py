@@ -40,7 +40,11 @@ class FileUploadRecord(BaseModel):
     )
     total_pages = models.PositiveIntegerField(blank=True, null=True)
     finalized_pages = models.PositiveIntegerField(blank=True, null=True)
-
+    client_file_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+    )
     is_ai_processed = models.BooleanField(default=False)
     is_client_fetched_response = models.BooleanField(default=False)
     is_batched_call = models.BooleanField(default=True)

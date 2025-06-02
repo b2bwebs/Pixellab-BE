@@ -203,7 +203,7 @@ class FileUploadRecordCreateAPIView(CreateAPIView):
 
             results.append(
                 {
-                    "id": record.id,
+                    "id": record.unique_id,
                     "file_name": record.file_name,
                     "original_file_path": (
                         record.original_file_path.url
